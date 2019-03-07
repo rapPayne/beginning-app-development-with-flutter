@@ -3,27 +3,27 @@ import 'package:flutter/material.dart';
 class ColorValueChanger extends StatefulWidget {
   final String property;
   final Function onChanged;
-  final int initialValue;
+  final int value;
   ColorValueChanger(
       {Key key,
       this.property = "property",
-      this.initialValue = 0,
+      this.value = 0,
       this.onChanged})
       : super(key: key);
 
   _ColorValueChangerState createState() => new _ColorValueChangerState(
-      property: property, initialValue: initialValue, onChanged: onChanged);
+      property: property, value: value, onChanged: onChanged);
 }
 
 class _ColorValueChangerState extends State<ColorValueChanger> {
   final String property;
   final Function onChanged;
-  final int initialValue;
-  int value;
+  final int value;
+  int _value;
   _ColorValueChangerState(
-      {Key key, this.property = "property", this.initialValue, this.onChanged})
+      {Key key, this.property = "property", this.value, this.onChanged})
       : super() {
-    value = initialValue;
+    this._value = value;
   }
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class _ColorValueChangerState extends State<ColorValueChanger> {
           Slider(
             min: 0,
             max: 255,
-            value: value.toDouble(),
+            value: _value.toDouble(),
             label: property,
             onChanged: _onChanged,
           )
@@ -45,7 +45,7 @@ class _ColorValueChangerState extends State<ColorValueChanger> {
 
   _onChanged(double value) {
     setState(() {
-      this.value = value.round();
+      this._value = value.round();
     });
     onChanged(property, value.round());
   }

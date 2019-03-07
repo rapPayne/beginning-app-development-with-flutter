@@ -18,9 +18,9 @@ class _ColorMixerState extends State<ColorMixer> {
       child: Column(
         children: <Widget>[
           ColorCircle(color: Color.fromRGBO(_redColor, _greenColor, _blueColor, 1), radius: 200,),
-          ColorValueChanger(property: "Red", initialValue:_redColor, onChanged: _setColor),
-          ColorValueChanger(property: "Green", initialValue:_greenColor, onChanged: _setColor),
-          ColorValueChanger(property: "Blue", initialValue:_blueColor, onChanged: _setColor),
+          ColorValueChanger(property: "Red", value:_redColor, onChanged: _setColor),
+          ColorValueChanger(property: "Green", value:_greenColor, onChanged: _setColor),
+          ColorValueChanger(property: "Blue", value:_blueColor, onChanged: _setColor),
         ],
       ),
     );
