@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import './ManagePeople.dart';
 import './AddPersonForm.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -29,9 +30,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   bool _showHelp = false;
-  List<Map> _people;
+  List<Map<String,dynamic>> _people;
   _MyHomePageState() {
-    _people = [
+    _people = <Map<String, String>>[
       {"first": "Jim", "last": "Halpert"},
       {"first": "Kelly", "last": "Kapoor"},
       {"first": "Creed", "last": "Bratton"},
@@ -49,13 +50,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    const _title = "Gestures demo";
+    const String _title = "Gestures demo";
     return Scaffold(
       appBar: AppBar(
         title: Text(_title),
       ),
       body: Stack(children: <Widget>[
-        ManagePeople(people:_people, deletePerson:_deletePerson, addPerson:_addPerson, updatePerson: _updatePerson),
+        ManagePeople(
+            people: _people,
+            deletePerson: _deletePerson,
+            addPerson: _addPerson,
+            updatePerson: _updatePerson),
         (_showHelp == true) ? _helpDialog() : Text(""),
       ]),
       floatingActionButton: FloatingActionButton(
@@ -65,26 +70,37 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  _addPerson(context) {
-    showDialog(context: context,  builder: (context) => 
-      AlertDialog(content: AddPersonForm(),)
+// Flutter study group - best pattern for getting context into a method.
+  void _addPerson(BuildContext context) {
+    showDialog<dynamic>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+            content: AddPersonForm(
+              addPerson: (Map<String, dynamic> newPerson) =>
+                  setState(() => _people.add(newPerson)),
+            ),
+          ),
     );
   }
-  _deletePerson(person, context) {
+
+  void _deletePerson(Map<String, dynamic>person, BuildContext context) {
     setState(() => _people.remove(person));
     print("Deleted ${person['first']}");
-    Scaffold.of(context).showSnackBar(SnackBar(content:Text("Deleted ${person['first']}")));
+    Scaffold.of(context)
+        .showSnackBar(SnackBar(content: Text("Deleted ${person['first']}")));
   }
-  _updatePerson(person, {status}) {
-    setState(() => person['status']=status);
+
+  void _updatePerson(Map<String, dynamic> person, {String status}) {
+    setState(() => person['status'] = status);
   }
 
   Widget _helpDialog() {
-    const _helpText =
+    const String _helpText =
         "Swipe right to accept. Swipe left to reject. Unpinch to enter a new person. Long press to delete.";
     return Positioned(
       bottom: 10,
-      left:0, right:0,
+      left: 0,
+      right: 0,
       child: Card(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -106,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         ),
-    ),
+      ),
     );
   }
 }

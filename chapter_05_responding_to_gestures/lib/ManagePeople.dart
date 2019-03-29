@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import './Person.dart';
 
 class ManagePeople extends StatelessWidget {
-  final List<Map> people;
+  final List<Map<String, dynamic>> people;
   final Function deletePerson;
   final Function addPerson;
   final Function updatePerson;
@@ -14,25 +14,25 @@ class ManagePeople extends StatelessWidget {
     double _swipeStartX;
     String _swipeDirection;
     return GestureDetector(
-      onScaleUpdate: (e) {
-        print("Scaling " + e.toString());
+      onScaleUpdate: (ScaleUpdateDetails e) {
         if (e.scale > 2.0) addPerson(context);
       },
+      onDoubleTap: () => addPerson(context),
       child: ListView(
         children: people
-            .map((person) => GestureDetector(
+            .map((Map<String,dynamic> person) => GestureDetector(
                   child: Person(person: person),
                   onLongPress: () {
                     deletePerson(person, context);
                   },
-                  onHorizontalDragStart: (e) {
+                  onHorizontalDragStart: (DragStartDetails e) {
                     _swipeStartX = e.globalPosition.dx;
                   },
-                  onHorizontalDragUpdate: (e) {
+                  onHorizontalDragUpdate: (DragUpdateDetails e) {
                     _swipeDirection =
                         (e.globalPosition.dx > _swipeStartX) ? "Right" : "Left";
                   },
-                  onHorizontalDragEnd: (e) {
+                  onHorizontalDragEnd: (DragEndDetails e) {
                     if (_swipeDirection == "Right")
                       updatePerson(person, status: "nice");
                     else

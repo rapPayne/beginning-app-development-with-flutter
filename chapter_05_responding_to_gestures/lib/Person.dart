@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Person extends StatelessWidget {
-  final person;
+  final Map<String, dynamic> person;
   final Map<String, Color> _colors = {
     "nice": Color.fromRGBO(220, 255, 220, 1.0),
     "naughty": Color.fromRGBO(255, 220, 220, 1.0)
@@ -10,7 +10,7 @@ class Person extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var color = _colors[person['status']];
+    Color color = _colors[person['status']];
 
     return Container(
       child: Text("${person['first']} ${person['last']}",
