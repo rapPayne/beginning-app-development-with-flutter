@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      routes: {
+      routes: <String, WidgetBuilder>{
         '/': (BuildContext ctx) => Landing(),
         '/tab': (BuildContext ctx) => TabNavigation(),
         '/drawer': (BuildContext ctx) => DrawerNavigation(),
