@@ -5,7 +5,7 @@ class Landing extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ch 9 Navigation'),
+        title: const Text('Ch 7 Navigation'),
       ),
       body: GridView.count(
           crossAxisCount: 2,
