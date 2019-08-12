@@ -1,0 +1,9 @@
+{
+ "people": [
+  { "id": 1, "name": {"first":"Don", "last":"Moser"}, "email":"2cool@gmail.com", "imagUrl":"https://vignette.wikia.nocookie.net/napoleondynamite/images/c/c1/Don_Moser.jpeg/revision/latest?cb=20150716222459" },
+  { "id": 2, "name": {"first":"Deborah", "last":"Bradshaw"}, "email":"deb@glamorShotsByDeb.com", "imagUrl":"https://vignette.wikia.nocookie.net/napoleondynamite/images/5/54/Deb.jpg/revision/latest?cb=20120117223252" },
+  { "id": 3, "name": {"first":"Trisha", "last":"Stevens"}, "email":"trisha.stevens@prestonhigh.k12.edu", "imagUrl":"https://vignette.wikia.nocookie.net/napoleondynamite/images/6/67/Trisha.jpg/revision/latest?cb=20140718001842" },
+  { "id": 4, "name": {"first":"Lafanduh", "last":"Lucas"}, "email":"llucas@detroit.city.us", "imagUrl":"https://vignette.wikia.nocookie.net/napoleondynamite/images/e/ea/Lafawnduh.jpeg/revision/latest?cb=20150716232151" },
+  { "id": 5, "name": {"first":"Summer", "last":"Wheatley"}, "email":"itsAlwaysSummer@gmail.com", "imagUrl":"https://vignette.wikia.nocookie.net/napoleondynamite/images/f/f5/Summer_Wheatley.png/revision/latest?cb=20120117223655" },
+ ]
+}
