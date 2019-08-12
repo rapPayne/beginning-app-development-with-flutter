@@ -1,17 +1,16 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'sensitiveConstants.dart';
+import 'sensitiveConstants.dart' show pexelsApiKey; // Remember, you'll need to put your own API key in a file called sensitiveConstants.dart to make this work for you.
 
-class SimpleFutureBuilder extends StatefulWidget {
+// Demonstrates a simple FutureBuilder
+class PexelsPhotos extends StatefulWidget {
   @override
-  _SimpleFutureBuilderState createState() => _SimpleFutureBuilderState();
+  _PexelsPhotosState createState() => _PexelsPhotosState();
 }
 
-class _SimpleFutureBuilderState extends State<SimpleFutureBuilder> {
+class _PexelsPhotosState extends State<PexelsPhotos> {
   TextEditingController _searchTextController;
-  List<Photo> _photos;
-  List<Widget> _photoWidgets;
 
   @override
   void initState() {
@@ -46,11 +45,11 @@ class _SimpleFutureBuilderState extends State<SimpleFutureBuilder> {
             controller: _searchTextController,
           ),
           Expanded(
-            child: FutureBuilder(
+            child: FutureBuilder<Response>(
               future: fetchPhotos(),
               builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                 if (snapshot.connectionState != ConnectionState.done) {
-                  return const CircularProgressIndicator();
+                  return Container(child: const CircularProgressIndicator());
                 }
                 if (snapshot.hasError) {
                   return Text('Oh no! Error! ${snapshot.error}');
@@ -65,9 +64,9 @@ class _SimpleFutureBuilderState extends State<SimpleFutureBuilder> {
                   return Text('Server error: $statusCode');
                 }
                 //print(responseBody);
-                String nextPageURL = responseBody['next_page'];
-                List<dynamic> photosDynamic = responseBody['photos'];
-                List<Photo> photos = photosDynamic.map<Photo>((dynamic p) {
+                //final String nextPageURL = responseBody['next_page'];
+                final List<dynamic> photosDynamic = responseBody['photos'];
+                final List<Photo> photos = photosDynamic.map<Photo>((dynamic p) {
                   final Photo photo = Photo();
                   photo.height = p['height'];
                   photo.width = p['width'];
@@ -76,7 +75,8 @@ class _SimpleFutureBuilderState extends State<SimpleFutureBuilder> {
                   photo.src = p['src'];
                   return photo;
                 }).toList();
-                List<Widget> widgets = photos
+                // And convert the List<Photo>s to a List<Widget>s to display
+                final List<Widget> widgets = photos
                     .map<Widget>((Photo p) => Container(
                           margin: const EdgeInsets.all(5.0),
                           child: Stack(
@@ -84,7 +84,7 @@ class _SimpleFutureBuilderState extends State<SimpleFutureBuilder> {
                               Image.network(p.src['large'],
                                   height: 300, width: 300, fit: BoxFit.cover),
                               Text(
-                                p.photographer,
+                                'By ${p.photographer}',
                                 style: Theme.of(context)
                                     .textTheme
                                     .caption
@@ -113,7 +113,8 @@ class _SimpleFutureBuilderState extends State<SimpleFutureBuilder> {
     );
   }
 
-  // Receives the search string and sets the List<photo> to what comes back
+  // Retrieves the search string and sets the List<photo> to what 
+  // comes back from the API endpoint -- pexels.com in this case.
   Future<Response> fetchPhotos() {
     final String encodedSearchString =
         Uri.encodeFull(_searchTextController.text);

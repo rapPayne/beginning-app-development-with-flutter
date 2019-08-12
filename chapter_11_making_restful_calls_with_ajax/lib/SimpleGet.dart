@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'sensitiveConstants.dart';
 
+// Demonstrates a very simple GET request
 class SimpleGet extends StatefulWidget {
   @override
   _SimpleGetState createState() => _SimpleGetState();
@@ -10,7 +11,6 @@ class SimpleGet extends StatefulWidget {
 
 class _SimpleGetState extends State<SimpleGet> {
   TextEditingController _searchTextController;
-  List<Photo> _photos;
   List<Widget> _photoWidgets;
 
   @override
@@ -65,54 +65,55 @@ class _SimpleGetState extends State<SimpleGet> {
   }
 
   // Receives the search string and sets the List<photo> to what comes back
-  void fetchPhotos(String searchText) async {
-    final String encodedSearchString = Uri.encodeFull(searchText);
-    final String url =
-        'https://api.pexels.com/v1/search?query=$encodedSearchString&per_page=15&page=1';
-    final Response response = await get(
-      Uri.encodeFull(url),
-      headers: <String, String>{
-        'Accept': 'application/json',
-        'Authorization': pexelsApiKey,
-      },
-    );
-    final Map<String, dynamic> responseBody = json.decode(response.body);
-    String nextPageURL = responseBody['next_page'];
-    List<dynamic> photosDynamic = responseBody['photos'];
-    List<Photo> photos = photosDynamic.map<Photo>((dynamic p) {
-      Photo photo = Photo();
-      photo.height = p['height'];
-      photo.width = p['width'];
-      photo.url = p['url'];
-      photo.photographer = p['photographer'];
-      photo.src = p['src'];
-      return photo;
-    }).toList();
+void fetchPhotos(String searchText) async {  // ignore:avoid_void_async
+  final String encodedSearchString = Uri.encodeFull(searchText);
+  final String url =
+      'https://api.pexels.com/v1/search?query=$encodedSearchString&per_page=15&page=1';
+  final Response response = await get(
+    Uri.encodeFull(url),
+    headers: <String, String>{
+      'Accept': 'application/json',
+      'Authorization': pexelsApiKey,
+    },
+  );
 
-    List<dynamic> photosSrc =
-        photosDynamic.map<dynamic>((dynamic p) => p['src']).toList();
-    List<dynamic> photosSrcSmall =
-        photosSrc.map<dynamic>((dynamic p) => p['large']).toList();
+  final Map<String, dynamic> responseBody = json.decode(response.body);
+  //final String nextPageURL = responseBody['next_page'];
+  final List<dynamic> photosDynamic = responseBody['photos'];
+  final List<Photo> photos = photosDynamic.map<Photo>((dynamic p) {
+    final Photo photo = Photo();
+    photo.height = p['height'];
+    photo.width = p['width'];
+    photo.url = p['url'];
+    photo.photographer = p['photographer'];
+    photo.src = p['src'];
+    return photo;
+  }).toList();
 
-    List<Widget> widgets = photos
-        .map<Widget>((Photo p) => Container(
-              margin: const EdgeInsets.all(5.0),
-              child: Stack(
-                children: <Widget>[
-                  Image.network(p.src['large'],
-                      height: 300, width: 300, fit: BoxFit.cover),
-                  Text(
-                    p.photographer,
-                    style: Theme.of(context).textTheme.caption.copyWith(color:Colors.white),
-                  ),
-                ],
-              ),
-            ))
-        .toList();
-    setState(() {
-      _photoWidgets = widgets;
-    });
-  }
+  // final List<dynamic> photosSrc =
+  //     photosDynamic.map<dynamic>((dynamic p) => p['src']).toList();
+  // final List<dynamic> photosSrcSmall =
+  //     photosSrc.map<dynamic>((dynamic p) => p['large']).toList();
+
+  final List<Widget> widgets = photos
+      .map<Widget>((Photo p) => Container(
+            margin: const EdgeInsets.all(5.0),
+            child: Stack(
+              children: <Widget>[
+                Image.network(p.src['large'],
+                    height: 300, width: 300, fit: BoxFit.cover),
+                Text(
+                  p.photographer,
+                  style: Theme.of(context).textTheme.caption.copyWith(color:Colors.white),
+                ),
+              ],
+            ),
+          ))
+      .toList();
+  setState(() {
+    _photoWidgets = widgets;
+  });
+}
 }
 
 class Photo {

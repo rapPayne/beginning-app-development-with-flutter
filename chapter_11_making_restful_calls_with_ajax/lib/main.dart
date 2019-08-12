@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'simple_get.dart';
-import 'simple_futurebuilder.dart';
+import 'NavigationDrawer.dart';
+import 'PeopleMaintenance.dart';
+import 'PeopleUpsert.dart';
+import 'PexelsPhotos.dart';
+import 'SimpleGet.dart';
 
 void main() {
   runApp(Main());
@@ -15,12 +18,33 @@ class _MainState extends State<Main> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Chapter 10 Ajax',
-
-          home: SimpleFutureBuilder(),
+      title: 'Chapter 11 Ajax',
       theme: ThemeData(
         primarySwatch: Colors.lime,
       ),
+      routes: <String, WidgetBuilder>{
+        '/': (BuildContext ctx) => Landing(),
+        '/simpleGet': (BuildContext ctx) => SimpleGet(),
+        '/pexelsPhotos': (BuildContext ctx) => PexelsPhotos(),
+        '/peopleAdd': (BuildContext ctx) => PeopleUpsert(),
+        '/peopleMaintenance': (BuildContext ctx) => PeopleMaintenance(),
+        '/peopleUpsert': (BuildContext ctx) => PeopleUpsert(),
+      },
+    );
+  }
+}
+
+class Landing extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Ch 11 Ajax and Firebase'),
+      ),
+      body: Container(
+        color: Colors.limeAccent,
+      ),
+      drawer: NavigationDrawer(),
     );
   }
 }
