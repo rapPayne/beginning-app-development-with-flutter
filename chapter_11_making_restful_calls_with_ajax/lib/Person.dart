@@ -1,27 +1,31 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
 
 class Person {
+  // Constructor only needed b/c name is a map of strings
+  // and needs to be initialized
   Person() {
     name = <String, String>{};
   }
-
-  Person.fromJson(Map<String, dynamic> data) {
-    name = data['name'];
-    email = data['email'];
-    imageUrl = data['imageUrl'];
+  // The typed deserialization pattern for a single person
+  static Person fromJson(String jsonString) {
+    final Map<String, dynamic> data = jsonDecode(jsonString);
+    return Person()
+      ..id = data['id']
+      ..name = data['name']
+      ..email = data['email']
+      ..imageUrl = data['imageUrl'];
   }
-
-  Person.fromDocumentSnapshot(DocumentSnapshot data) {
-    documentID = data.documentID;
-    imageUrl = data['imageUrl'];
-    email = data['email'];
-    name = <String, String>{
-      'first': data['name']['first'],
-      'last': data['name']['last']
-    };
+  // The typed deserialization pattern for lists of people
+  static List<Person> fromJsonArray(String jsonString) {
+    final Iterable<dynamic> data = jsonDecode(jsonString);
+    return data.map<Person>((dynamic d) => Person()
+      ..id = d['id']
+      ..name = <String, String>{'first':d['first'], 'last':d['last']}
+      ..email = d['email']
+      ..imageUrl = d['imageUrl']).toList();
   }
-
-  String documentID;
+  // The actual properties of a person
+  int id;
   Map<String, String> name;
   String email;
   String imageUrl;

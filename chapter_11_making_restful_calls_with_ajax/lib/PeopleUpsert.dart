@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart';
 import 'Person.dart';
+import 'sensitiveConstants.dart';
 
 class PeopleUpsert extends StatefulWidget {
   @override
@@ -9,28 +10,31 @@ class PeopleUpsert extends StatefulWidget {
 
 class _PeopleUpsertState extends State<PeopleUpsert> {
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
-  Person _person;
+  Person person;
 
   @override
   Widget build(BuildContext context) {
-    // // Get the person via an InheritedWidget
-    _person = ModalRoute.of(context).settings.arguments;
-    _person = (_person == null) ? Person() : _person;
-    print('Person received: ${_person.email}');
-    //final TextStyle labelStyle = Theme.of(context).textTheme.body2;
+    // Get the 'current' person set during navigation. If
+    // this person is null, we're adding a new person and
+    // we must instantiate one. If this person is not null,
+    // then we're updating that person.
+    final Person _person = ModalRoute.of(context).settings.arguments;
+    person = (_person == null) ? Person() : _person;
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'People Maintenance',
+        title: Text(
+          (_person == null) ? 'Add a person' : 'Update a person',
         ),
       ),
       body: _body,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          // Commit field data to the form key
           _key.currentState.save();
-          // Save the person here.
-          updatePersonToFirestore(_person);
-          Navigator.pop<Person>(context, _person);
+          // Save the person
+          updatePersonToPipedream(person);
+          // And go back to where we came from
+          Navigator.pop<Person>(context, person);
         },
         child: Icon(Icons.save),
       ),
@@ -41,61 +45,55 @@ class _PeopleUpsertState extends State<PeopleUpsert> {
     return Form(
       key: _key,
       child: Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: <Widget>[
-              personFormField(
-                  labelText: 'First name', initialValue: _person.name['first']),
-              personFormField(
-                  labelText: 'Last name', initialValue: _person.name['last']),
-              personFormField(labelText: 'Email', initialValue: _person.email),
-              personFormField(
-                  labelText: 'Image URL', initialValue: _person.imageUrl),
-            ],
-          )),
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: <Widget>[
+            TextFormField(
+                initialValue: person.name['first'],
+                decoration: InputDecoration(labelText: 'First name'),
+                onSaved: (String val) => person.name['first'] = val),
+            TextFormField(
+                initialValue: person.name['last'],
+                decoration: InputDecoration(labelText: 'Last name'),
+                onSaved: (String val) => person.name['last'] = val),
+            TextFormField(
+                initialValue: person.email,
+                decoration: InputDecoration(labelText: 'Email'),
+                onSaved: (String val) => person.email = val),
+            TextFormField(
+                initialValue: person.imageUrl,
+                decoration: InputDecoration(labelText: 'Image URL'),
+                onSaved: (String val) => person.imageUrl = val),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget personFormField(
-      {String labelText, String fieldName, String initialValue}) {
-    return TextFormField(
-      initialValue: initialValue,
-      decoration: InputDecoration(labelText: labelText),
-      onSaved: (String val) {
-        //_person[fieldName] = val;
-        switch (labelText) {
-          case 'First name':
-            _person.name['first'] = val;
-            break;
-          case 'Last name':
-            _person.name['last'] = val;
-            break;
-          case 'Email':
-            _person.email = val;
-            break;
-          case 'Image URL':
-            _person.imageUrl = val;
-            break;
-          default:
-            throw "Bad person field name. I don't know $labelText";
-        }
-      },
-    );
+// Add/update document in collection "people"
+void updatePersonToPipedream(Person person) {
+  Future<Response> response;
+  final String payload = """
+    {
+      "first":"${person.name['first']}", 
+      "last":"${person.name['last']}",
+      "imageUrl":"${person.imageUrl}",
+      "email":"${person.email}" 
+    }
+    """;
+  final Map<String, String> headers = <String, String>{'Content-type': 'application/json'};
+  // If id is null, we're adding. If not, we're updating.
+  if (person.id == null) {
+    String url = 
+     '$pipedreamRESTUrl/people/?pipedream_response=1';
+    response = post(url, headers: headers, body: payload);
+  } else {
+    String url = 
+     '$pipedreamRESTUrl/people/${person.id}?pipedream_response=1';
+    response = put(url, headers: headers, body: payload);
   }
-
-  void updatePersonToFirestore(Person person) {
-    // Add/update document in collection "people"
-    Firestore.instance
-        .collection('people')
-        .document(_person.documentID)
-        .setData(<String, dynamic>{
-      'name': person.name,
-      'email': person.email,
-      'imageUrl': person.imageUrl,
-    }).then<void>((dynamic doc) {
-      print('Document successfully written! $doc');
-    }).catchError((dynamic error) {
-      print('Error! $error');
-    });
-  }
+  response.then((Response res) {
+    Navigator.pop(context, Person.fromJson(res.body));
+  });
+}
 }

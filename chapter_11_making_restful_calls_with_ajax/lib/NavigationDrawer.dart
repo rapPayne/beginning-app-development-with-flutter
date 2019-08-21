@@ -39,7 +39,7 @@ class NavigationDrawer extends StatelessWidget {
             leading: const Icon(Icons.people),
             title: const Text('People Maintenance'),
             onTap: () {
-              Navigator.pushNamed(context, '/peopleMaintenance');
+              Navigator.pushNamed(context, '/peopleList');
             },
           ),
         ],

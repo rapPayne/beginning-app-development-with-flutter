@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'NavigationDrawer.dart';
-import 'PeopleMaintenance.dart';
+import 'PeopleList.dart';
 import 'PeopleUpsert.dart';
 import 'PexelsPhotos.dart';
 import 'SimpleGet.dart';
@@ -27,7 +27,7 @@ class _MainState extends State<Main> {
         '/simpleGet': (BuildContext ctx) => SimpleGet(),
         '/pexelsPhotos': (BuildContext ctx) => PexelsPhotos(),
         '/peopleAdd': (BuildContext ctx) => PeopleUpsert(),
-        '/peopleMaintenance': (BuildContext ctx) => PeopleMaintenance(),
+        '/peopleList': (BuildContext ctx) => PeopleList(),
         '/peopleUpsert': (BuildContext ctx) => PeopleUpsert(),
       },
     );
@@ -39,7 +39,7 @@ class Landing extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ch 11 Ajax and Firebase'),
+        title: const Text('Ch 11 Ajax'),
       ),
       body: Container(
         color: Colors.limeAccent,
