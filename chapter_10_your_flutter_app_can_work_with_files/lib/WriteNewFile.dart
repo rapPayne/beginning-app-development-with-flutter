@@ -1,8 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'LayoutDrawer.dart';
 import 'utilities.dart';
-import 'dart:io';
 
 class WriteNewFile extends StatefulWidget {
   @override
@@ -10,16 +10,16 @@ class WriteNewFile extends StatefulWidget {
 }
 
 class _WriteNewFileState extends State<WriteNewFile> {
-  String _filename = "newFile.txt";
-  String _text = "No text yet";
-  String _message = "";
+  String _filename = 'newFile.txt';
+  String _text = 'No text yet';
+  String _message = '';
   bool _errorStatus = false;
   TextEditingController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = new TextEditingController(text: _filename);
+    _controller = TextEditingController(text: _filename);
   }
 
   @override
@@ -32,18 +32,18 @@ class _WriteNewFileState extends State<WriteNewFile> {
   }
 
   Widget get _body {
-    TextStyle _messageStyle = _errorStatus
+    final TextStyle _messageStyle = _errorStatus
         ? TextStyle(color: Colors.red, fontWeight: FontWeight.bold)
         : Theme.of(context).textTheme.body1;
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       child: ListView(
         children: <Widget>[
-          Text("Write a new file: $_filename"),
+          Text('Write a new file: $_filename'),
           TextField(
-            decoration: InputDecoration(labelText: "Filename"),
+            decoration: InputDecoration(labelText: 'Filename'),
             controller: _controller,
-            onChanged: (value) {
+            onChanged: (String value) {
               setState(() {
                 _filename = value;
               });
@@ -52,14 +52,14 @@ class _WriteNewFileState extends State<WriteNewFile> {
           RaisedButton(
             child: Icon(Icons.open_in_browser),
             onPressed: () async {
-              Directory documents = await getApplicationDocumentsDirectory();
+              final Directory documents = await getApplicationDocumentsDirectory();
               setState(() {
                 _errorStatus = false;
                 _text = makeRandomText(50);
               });
               // Write the file
               try {
-                File file = File('${documents.path}/$_filename');
+                final File file = File('${documents.path}/$_filename');
                 await file.writeAsString(_text);
                 // Modal success
                 _message = '$_filename was saved with the message "$_text"';
@@ -73,15 +73,15 @@ class _WriteNewFileState extends State<WriteNewFile> {
           ),
           Text(
             _text,
-            style: TextStyle(fontFamily: "Courier"),
+            style: TextStyle(fontFamily: 'Courier'),
           ),
           Container(
             decoration: BoxDecoration(
               border: Border.all(width: 2),
-              borderRadius: BorderRadius.all(Radius.circular(5)),
+              borderRadius: const BorderRadius.all(Radius.circular(5)),
             ),
-            margin: EdgeInsets.all(10),
-            padding: EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: Text(
               _message,
               style: _messageStyle,

@@ -40,7 +40,7 @@ class _ChangeUserPreferencesState extends State<ChangeUserPreferences> {
     return Scaffold(
       appBar: LayoutAppBar().toPreferredSizeWidget(context),
       drawer: LayoutDrawer(),
-      body: FutureBuilder(
+      body: FutureBuilder<dynamic>(
         future: _loading,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if(snapshot.connectionState == ConnectionState.done){

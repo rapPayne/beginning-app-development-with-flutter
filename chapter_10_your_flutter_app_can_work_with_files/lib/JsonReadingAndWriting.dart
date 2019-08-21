@@ -248,7 +248,7 @@ class _JsonReadingAndWritingState extends State<JsonReadingAndWriting> {
                 occupation: p["occupation"]))
             .toList();
       });
-    }).catchError((e) {
+    }).catchError((Object e) {
       setState(() {
         _errorStatus = true;
         _message = 'Error: $e';
@@ -262,7 +262,7 @@ class _JsonReadingAndWritingState extends State<JsonReadingAndWriting> {
       _errorStatus = false;
     });
     File file = File('${documents.path}/$_filename');
-    Map<String, dynamic> jsonObject = {"people": _people};
+    Map<String, dynamic> jsonObject = <String, dynamic>{"people": _people};
 
     try {
       await file.writeAsString(json.encode(jsonObject));
@@ -288,7 +288,7 @@ class Person {
     return json.encode(this);
   }
 
-  Map<String,dynamic> toJson() => {
+  Map<String,dynamic> toJson() => <String, dynamic>{
         "id": this.id,
         "firstName": this.firstName,
         "lastName": this.lastName,
