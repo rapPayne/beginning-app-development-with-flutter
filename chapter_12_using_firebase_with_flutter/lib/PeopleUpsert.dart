@@ -13,11 +13,8 @@ class _PeopleUpsertState extends State<PeopleUpsert> {
 
   @override
   Widget build(BuildContext context) {
-    // // Get the person via an InheritedWidget
     _person = ModalRoute.of(context).settings.arguments;
     _person = (_person == null) ? Person() : _person;
-    print('Person received: ${_person.email}');
-    //final TextStyle labelStyle = Theme.of(context).textTheme.body2;
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -83,8 +80,11 @@ class _PeopleUpsertState extends State<PeopleUpsert> {
     );
   }
 
-  void updatePersonToFirestore(Person person) {
-    // Add/update document in collection "people"
+  // Add/update document in collection "people". This one function
+  // works for both cases since _person.documentID is null for a
+  // new record and Firestore will add/insert a document if the 
+  // documentID can't be found.
+void updatePersonToFirestore(Person person) {
     Firestore.instance
         .collection('people')
         .document(_person.documentID)

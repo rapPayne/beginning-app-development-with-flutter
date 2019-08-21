@@ -10,6 +10,21 @@ class PeopleList extends StatefulWidget {
 class _PeopleListState extends State<PeopleList> {
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('People Maintenance'),
+      ),
+      body: body,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/peopleUpsert');
+        },
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+
+  Widget get body {
     return StreamBuilder<QuerySnapshot>(
       stream: fetchPeople(),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -38,17 +53,22 @@ class _PeopleListState extends State<PeopleList> {
                 margin: const EdgeInsets.all(5.0),
                 child: Stack(
                   children: <Widget>[
-                    Image.network(person.imageUrl,
-                        height: 300, width: 300, fit: BoxFit.cover),
+                    if (person.imageUrl != null)
+                      Image.network(person.imageUrl,
+                          height: 300, width: 300, fit: BoxFit.cover)
+                    else
+                      Image.asset('lib/assets/images/NoImage.jpg'),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text(
-                          '${p['name']['first']} ${p['name']['last']}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .title
-                              .copyWith(color: Colors.white),
+                        Flexible(
+                          child: Text(
+                            '${p['name']['first']} ${p['name']['last']}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .title
+                                .copyWith(color: Colors.white),
+                          ),
                         ),
                         IconButton(
                           icon: Icon(
