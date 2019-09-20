@@ -57,7 +57,7 @@ class _CustomFontsState extends State<CustomFonts> {
       print('Error in getting Lorem Ipsums: $e');
       rethrow;
     } finally {
-      setState(() {
+      if (mounted) setState(() {
         loading = false;
       });
     }
