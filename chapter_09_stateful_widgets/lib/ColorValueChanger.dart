@@ -4,6 +4,7 @@ class ColorValueChanger extends StatefulWidget {
   final String property;
   final Function onChanged;
   final int value;
+  // Value passed in from its host
   ColorValueChanger(
       {Key key,
       this.property = "property",
@@ -11,31 +12,23 @@ class ColorValueChanger extends StatefulWidget {
       this.onChanged})
       : super(key: key);
 
-  _ColorValueChangerState createState() => new _ColorValueChangerState(
-      property: property, value: value, onChanged: onChanged);
+  _ColorValueChangerState createState() => new _ColorValueChangerState();
 }
 
 class _ColorValueChangerState extends State<ColorValueChanger> {
-  final String property;
-  final Function onChanged;
-  final int value;
   int _value;
-  _ColorValueChangerState(
-      {Key key, this.property = "property", this.value, this.onChanged})
-      : super() {
-    this._value = value;
-  }
   @override
   Widget build(BuildContext context) {
+    _value = widget.value;
     return Container(
       child: Column(
         children: <Widget>[
-          Text(property, style: Theme.of(context).textTheme.subtitle),
+          Text(widget.property, style: Theme.of(context).textTheme.subtitle),
           Slider(
             min: 0,
             max: 255,
-            value: _value.toDouble(),
-            label: property,
+            value: _value?.toDouble(),
+            label: widget.property,
             onChanged: _onChanged,
           )
         ],
@@ -47,6 +40,6 @@ class _ColorValueChangerState extends State<ColorValueChanger> {
     setState(() {
       this._value = value.round();
     });
-    onChanged(property, value.round());
+    widget.onChanged(widget.property, value.round());
   }
 }
