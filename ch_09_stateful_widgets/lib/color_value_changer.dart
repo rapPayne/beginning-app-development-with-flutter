@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 class ColorValueChanger extends StatefulWidget {
   final String property;
-  final Function onChanged;
+  final Function changeColorValue;
   final int value;
   // Value passed in from its host
   const ColorValueChanger(
       {Key? key,
       this.property = "property",
       this.value = 0,
-      required this.onChanged})
+      required this.changeColorValue})
       : super(key: key);
 
   @override
@@ -37,6 +37,6 @@ class _ColorValueChangerState extends State<ColorValueChanger> {
 
   _onChanged(double value) {
     setState(() => _value = value.round());
-    widget.onChanged(widget.property, value.round());
+    widget.changeColorValue(widget.property, value.round());
   }
 }
